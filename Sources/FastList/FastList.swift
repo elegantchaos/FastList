@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-struct FastList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
+public struct FastList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
     @Environment(\.lineSpacing) var lineSpacing
     
     public var data: Data
