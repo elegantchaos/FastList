@@ -6,22 +6,29 @@
 import SwiftUI
 
 public struct FastList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
-    @Environment(\.lineSpacing) var lineSpacing
+    @Environment(\.defaultMinListRowHeight) var minHeight
     
     public var data: Data
     public var content: (Data.Element) -> Content
-
+    
     public init(_ data: Data, @ViewBuilder content: @escaping (Data.Element) -> Content) {
         self.data = data
         self.content = content
     }
-
+    
     public var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: lineSpacing) {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                Divider()
+                
                 ForEach(data) { item in
-                    content(item)
-                    Divider()
+                    VStack(alignment: .leading, spacing: 0) {
+                        Spacer()
+                        content(item)
+                        Spacer()
+                        Divider()
+                    }
+                    .frame(minHeight: minHeight)
                 }
             }
         }
