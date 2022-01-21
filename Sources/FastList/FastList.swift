@@ -16,7 +16,7 @@ public struct FastList<Data, Content>: View where Data: RandomAccessCollection, 
         self.content = content
     }
 
-    var body: some View {
+    public var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: lineSpacing) {
                 ForEach(data) { item in
