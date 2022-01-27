@@ -12,18 +12,16 @@ public struct FastList<Data, Content>: View where Data: RandomAccessCollection, 
     public var data: Data
     public var content: (Data.Element) -> Content
     
-    let refreshHeight: Double
-    let activityOffset: CGFloat?
+    let scrollMode: RefreshableScrollMode
 
-    public init(_ data: Data, refreshHeight: Double = 80, activityOffset: CGFloat? = nil, @ViewBuilder content: @escaping (Data.Element) -> Content) {
+    public init(_ data: Data, mode: RefreshableScrollMode = .normal, @ViewBuilder content: @escaping (Data.Element) -> Content) {
         self.data = data
         self.content = content
-        self.refreshHeight = refreshHeight
-        self.activityOffset = activityOffset
+        self.scrollMode = mode
     }
     
     public var body: some View {
-        RefreshableScrollView(travelHeight: refreshHeight, activityOffset: activityOffset) {
+        RefreshableScrollView(mode: scrollMode) {
             InnerViewList(data: data, content: content)
         }
     }

@@ -8,16 +8,52 @@
 import FastList
 import SwiftUI
 
+struct TestItem: Identifiable {
+    let id = UUID().uuidString
+}
+
+let testItems = (1..<100).map({ _ in TestItem() })
+
+
 struct ContentView: View {
-    struct TestItem: Identifiable {
-        let id = UUID().uuidString
-    }
-    
-    let testItems = (1..<100).map({ _ in TestItem() })
-    
     var body: some View {
-        VStack {
-            FastList(testItems) { item in
+        TabView {
+            ExampleList()
+                .tabItem {
+                    Label("List", systemImage: "tag")
+                }
+            
+            ExampleInNavigationView()
+                .tabItem {
+                    Label("Navigation", systemImage: "tag")
+                }
+            
+            NormalList()
+                .tabItem {
+                    Label("Built-In List", systemImage: "tag")
+                }
+        }
+        .padding()
+    }
+}
+
+struct ExampleList: View {
+    var body: some View {
+        FastList(testItems) { item in
+            Text(item.id)
+        }
+        .refreshable {
+            print("refreshing")
+            sleep(2)
+            print("done")
+        }
+    }
+}
+
+struct ExampleInNavigationView: View {
+    var body: some View {
+        NavigationView {
+            FastList(testItems, mode: .custom(80, 160, false)) { item in
                 Text(item.id)
             }
             .refreshable {
@@ -25,20 +61,28 @@ struct ContentView: View {
                 sleep(2)
                 print("done")
             }
+                .navigationTitle("Navigation")
+                .navigationBarTitleDisplayMode(.large)
+            
+            Text("Placeholder")
+        }
+        .navigationViewStyle(.stack)
+    }
+}
 
-            List {
-                ForEach(1..<100) { item in
-                    Text("\(item)")
-                }
-            }
-            .listStyle(.plain)
-            .refreshable {
-                print("refreshing")
-                sleep(2)
-                print("done")
+struct NormalList: View {
+    var body: some View {
+        List {
+            ForEach(testItems) { item in
+                Text("\(item.id)")
             }
         }
-            .padding()
+        .listStyle(.plain)
+        .refreshable {
+            print("refreshing")
+            sleep(2)
+            print("done")
+        }
     }
 }
 
