@@ -3,11 +3,12 @@
 //  All code (c) 2022 - present day, Elegant Chaos.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+import RefreshableScrollView
 import SwiftUI
 
 public struct FastList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
-    @Environment(\.defaultMinListRowHeight) var minHeight
-    
+    @Environment(\.refresh) private var refreshAction
+
     public var data: Data
     public var content: (Data.Element) -> Content
     
@@ -17,23 +18,22 @@ public struct FastList<Data, Content>: View where Data: RandomAccessCollection, 
     }
     
     public var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
-                Divider()
-                
-                ForEach(data) { item in
-                    VStack(alignment: .leading, spacing: 0) {
-                        Spacer()
-                        content(item)
-                        Spacer()
-                        Divider()
-                    }
-                    .frame(minHeight: minHeight)
-                }
-            }
+        RefreshableScrollView() {
+            InnerViewList(data: data, content: content)
         }
-        .foregroundColor(.primary)
-        .padding(.horizontal)
+    }
+}
+
+struct FastList_Previews: PreviewProvider {
+    struct Item: Identifiable {
+        let id: String = UUID().uuidString
     }
     
+    static var previews: some View {
+        let stuff = (1..<10000).map({ _ in Item() })
+        
+        FastList(stuff) { item in
+            Text(item.id)
+        }
+    }
 }
