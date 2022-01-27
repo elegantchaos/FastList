@@ -22,7 +22,7 @@ struct ContentView: View {
             }
             .refreshable {
                 print("refreshing")
-                sleep(5)
+                sleep(2)
                 print("done")
             }
 
@@ -34,7 +34,7 @@ struct ContentView: View {
             .listStyle(.plain)
             .refreshable {
                 print("refreshing")
-                sleep(5)
+                sleep(2)
                 print("done")
             }
         }
