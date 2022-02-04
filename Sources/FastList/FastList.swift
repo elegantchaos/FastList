@@ -8,21 +8,27 @@ import SwiftUI
 
 public struct FastList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
     @Environment(\.refresh) private var refreshAction
-
-    public var data: Data
-    public var content: (Data.Element) -> Content
     
-    let scrollMode: RefreshableScrollMode
+    let data: Data
+    let configuration: ListConfiguration
+    let content: (Data.Element) -> Content
+    
 
     public init(_ data: Data, mode: RefreshableScrollMode = .normal, @ViewBuilder content: @escaping (Data.Element) -> Content) {
         self.data = data
         self.content = content
-        self.scrollMode = mode
+        self.configuration = .init(showInitialDivider: true, showDividers: true, scrollMode: mode)
     }
-    
+
+    public init(_ data: Data, configuration: ListConfiguration, @ViewBuilder content: @escaping (Data.Element) -> Content) {
+        self.data = data
+        self.content = content
+        self.configuration = configuration
+    }
+
     public var body: some View {
-        RefreshableScrollView(mode: scrollMode) {
-            InnerViewList(data: data, content: content)
+        RefreshableScrollView(mode: configuration.scrollMode) {
+            InnerListView(data: data, configuration: configuration, content: content)
         }
     }
 }

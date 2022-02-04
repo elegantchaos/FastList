@@ -5,26 +5,33 @@
 
 import SwiftUI
 
-struct InnerViewList<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
+struct InnerListView<Data, Content>: View where Data: RandomAccessCollection, Content: View, Data.Element: Identifiable {
     @Environment(\.defaultMinListRowHeight) var minHeight
-    public var data: Data
-    public var content: (Data.Element) -> Content
-
+    
+    let data: Data
+    let configuration: ListConfiguration
+    let content: (Data.Element) -> Content
+    
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 0) {
-            Divider()
+            if configuration.showInitialDivider {
+                Divider()
+            }
             
             ForEach(data) { item in
                 VStack(alignment: .leading, spacing: 0) {
                     Spacer()
                     content(item)
                     Spacer()
-                    Divider()
+                    
+                    if configuration.showDividers {
+                        Divider()
+                    }
                 }
                 .frame(minHeight: minHeight)
             }
         }
-            .padding(.horizontal)
-            .foregroundColor(.primary)
+        .padding(.horizontal)
+        .foregroundColor(.primary)
     }
 }
