@@ -8,6 +8,12 @@
 import FastList
 import SwiftUI
 
+@Sendable func refresh() async {
+    print("refreshing")
+    try? await Task.sleep(nanoseconds: 2000000000)
+    print("done")
+}
+
 struct TestItem: Identifiable {
     let id = UUID().uuidString
 }
@@ -15,23 +21,41 @@ struct TestItem: Identifiable {
 let testItems = (1..<100).map({ _ in TestItem() })
 
 
+enum Tab: Int {
+    case list
+    case searchable
+    case navigation
+    case builtIn
+}
+
 struct ContentView: View {
+    @AppStorage("tab") var tab: Tab = .list
+    
     var body: some View {
-        TabView {
+        TabView(selection: $tab) {
             ExampleList()
                 .tabItem {
                     Label("List", systemImage: "tag")
                 }
+                .tag(Tab.list)
             
+            ExampleSearchable()
+                .tabItem {
+                    Label("Searchable", systemImage: "tag")
+                }
+                .tag(Tab.searchable)
+
             ExampleInNavigationView()
                 .tabItem {
                     Label("Navigation", systemImage: "tag")
                 }
-            
+                .tag(Tab.navigation)
+
             NormalList()
                 .tabItem {
                     Label("Built-In List", systemImage: "tag")
                 }
+                .tag(Tab.builtIn)
         }
         .padding()
     }
@@ -42,27 +66,19 @@ struct ExampleList: View {
         FastList(testItems) { item in
             Text(item.id)
         }
-        .refreshable {
-            print("refreshing")
-            sleep(2)
-            print("done")
-        }
+        .refreshable(action: refresh)
     }
 }
 
 struct ExampleInNavigationView: View {
     var body: some View {
         NavigationView {
-            FastList(testItems, mode: .custom(80, 160, false)) { item in
+            FastList(testItems, mode: .navigation) { item in
                 Text(item.id)
             }
-            .refreshable {
-                print("refreshing")
-                sleep(2)
-                print("done")
-            }
-                .navigationTitle("Navigation")
-                .navigationBarTitleDisplayMode(.large)
+            .refreshable(action: refresh)
+            .navigationTitle("Navigation")
+            .navigationBarTitleDisplayMode(.large)
             
             Text("Placeholder")
         }
@@ -70,19 +86,39 @@ struct ExampleInNavigationView: View {
     }
 }
 
-struct NormalList: View {
+
+struct ExampleSearchable: View {
+    @State var filter = ""
+    
     var body: some View {
+        NavigationView {
+            FastList(testItems, mode: .searchableNavigation) { item in
+                Text(item.id)
+            }
+            .refreshable(action: refresh)
+            .navigationTitle("Navigation")
+            .navigationBarTitleDisplayMode(.large)
+            
+            Text("Placeholder")
+        }
+        .navigationViewStyle(.stack)
+        .searchable(text: $filter, placement: .navigationBarDrawer(displayMode: .always))
+    }
+}
+
+struct NormalList: View {
+    @State var filter = ""
+    var body: some View {
+        NavigationView {
         List {
             ForEach(testItems) { item in
                 Text("\(item.id)")
             }
         }
         .listStyle(.plain)
-        .refreshable {
-            print("refreshing")
-            sleep(2)
-            print("done")
+        .refreshable(action: refresh)
         }
+        .searchable(text: $filter, placement: .navigationBarDrawer(displayMode: .always))
     }
 }
 

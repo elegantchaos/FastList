@@ -11,15 +11,6 @@
         }
       },
       {
-        "package": "RefreshableScrollView",
-        "repositoryURL": "https://github.com/elegantchaos/RefreshableScrollView.git",
-        "state": {
-          "branch": null,
-          "revision": "85e0d0a7e0f7720a02f806a7fdbb17acc6433f62",
-          "version": "1.1.0"
-        }
-      },
-      {
         "package": "XCTestExtensions",
         "repositoryURL": "https://github.com/elegantchaos/XCTestExtensions.git",
         "state": {
