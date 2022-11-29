@@ -18,7 +18,7 @@ let package = Package(
             targets: ["FastList"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/elegantchaos/RefreshableScrollView.git", from: "1.3.0"),
+        .package(url: "https://github.com/elegantchaos/RefreshableScrollView.git", from: "1.3.1"),
         .package(url: "https://github.com/elegantchaos/XCTestExtensions.git", from: "1.4.2")
     ],
     targets: [
